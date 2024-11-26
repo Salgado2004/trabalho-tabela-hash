@@ -4,51 +4,46 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#define LEN 10
+
+int maxsize = 10;
 
 typedef struct data{
     char nome[51];
     char numero[11];
 } contato;
     
-contato *hashTable[LEN];
+struct hashmap{
+    contato **map;
+    int len;
+} hashTable;
 
 void inicializarTabela() {
-    for (int i = 0; i < LEN; i++) {
-        hashTable[i] = NULL;
+    hashTable.map = (contato **) calloc(sizeof(contato), maxsize);
+    for (int i = 0; i < maxsize; i++) {
+        hashTable.map[i] = NULL;
     }
+    hashTable.len = 0;
 }
 
 unsigned int hash(char *nome){
-    int soma = 0;
+    int len = (int) strlen(nome);
     double somatorio = 0;
-    int conta = 0;
-    int media;
-    double desvPad;
-    for (int i=0; i < strlen(nome); i++){
-        conta++;
-        soma += nome[i];
-        somatorio += pow(nome[i], 2);
-        media = soma/conta;
-        desvPad = sqrt((somatorio - (2*media*soma) + (pow(media, 2)*conta))/conta-1);
+    for (int i=0; i < len; i++){
+        somatorio += pow(nome[i], (len-i));
     }
-    int pos = ((int) desvPad+media) % LEN;
+    int pos = ((int) sqrt(somatorio)) % maxsize;
     return pos;
 }
 
-void adicionarContato() {
-    char nome[50];
-    char numero[10];
-    printf("Nome do contato (sem espacos): ");
-    scanf("%s", nome);
+void adicionarContato(char *nome, char *numero) {
     int index = hash(nome);
-    printf("Numero do contato: ");
-    scanf("%s", numero);
     contato *novoContato = (contato *) malloc(sizeof(contato));
     strcpy(novoContato->nome, nome);
     strcpy(novoContato->numero, numero);
-    if (hashTable[index] == NULL) {
-        hashTable[index] = novoContato;
+
+    if (hashTable.map[index] == NULL) {
+        hashTable.map[index] = novoContato;
+        hashTable.len++;
         printf("Contato adicionado com sucesso!\n");
     } else {
         printf("Colisao! Implemente tratamento de colisao.\n");
@@ -56,20 +51,17 @@ void adicionarContato() {
     return;
 }
 
-void buscarContato() {
-    char nome[50];
-    printf("Nome do contato: ");
-    scanf("%s", nome);
+void buscarContato(char *nome) {
     
     clock_t start, end;
     start = clock();
     
     int index = hash(nome);
-    if (hashTable[index] != NULL) {
+    if (hashTable.map[index] != NULL) {
         end = clock();
         double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
-        printf("Contato encontrado: %s - %s ", hashTable[index]->nome, hashTable[index]->numero);
-        printf("(Tempo de busca: %.2f ms)\n", cpu_time_used);
+        printf("Contato encontrado: %s - %s ", hashTable.map[index]->nome, hashTable.map[index]->numero);
+        printf("(Tempo de busca: %.4f ms)\n", cpu_time_used);
     } else {
         printf("Contato nao encontrado.\n");
     }
@@ -81,15 +73,20 @@ void removerContato() {
 }
 
 void exibirContatos() {
-    for (int i = 0; i < LEN; i++) {
-        if (hashTable[i] != NULL) {
-            printf("Posicao %d: %s - %s\n", i, hashTable[i]->nome, hashTable[i]->numero);
+    printf("Contatos: %d/%d\n", hashTable.len, maxsize);
+    for (int i = 0; i < maxsize; i++) {
+        if (hashTable.map[i] != NULL) {
+            printf("Posicao %d: %s - %s\n", i, hashTable.map[i]->nome, hashTable.map[i]->numero);
         }
     }
 }
 
 int main() {
     int opcao;
+    
+    char nome[51];
+    char numero[11];
+
     inicializarTabela();
 
     do {
@@ -105,10 +102,16 @@ int main() {
 
         switch (opcao) {
             case 1:
-                adicionarContato();
+                printf("Nome do contato (sem espacos): ");
+                scanf("%s", nome);
+                printf("Numero do contato: ");
+                scanf("%s", numero);
+                adicionarContato(nome, numero);
                 break;
             case 2:
-                buscarContato();
+                printf("Nome do contato: ");
+                scanf("%s", nome);
+                buscarContato(nome);
                 break;
             case 3:
                 removerContato();
