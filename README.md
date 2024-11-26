@@ -1,4 +1,4 @@
-[Voltar para main](../../tree/main)
+[Voltar para main](../../../tree/main)
 
 > Tabela Hash - Professor Lucas
 # Exercício: Implementação de Lista Telefônica com Hash Table
