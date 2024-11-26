@@ -6,12 +6,13 @@
 #include <time.h>
 
 int maxsize = 10;
+void rehashing();
 
 typedef struct data{
     char nome[51];
     char numero[11];
 } contato;
-    
+
 struct hashmap{
     contato **map;
     int len;
@@ -46,7 +47,12 @@ void adicionarContato(char *nome, char *numero) {
         hashTable.len++;
         printf("Contato adicionado com sucesso!\n");
     } else {
-        printf("Colisao! Implemente tratamento de colisao.\n");
+        if (strcmp(hashTable.map[index]->nome, nome) == 0){
+            printf("Nome igual nao neh amigo, complica para o hash\n");
+        } else{
+            rehashing();
+            adicionarContato(nome, numero);
+        }
     }
     return;
 }
@@ -95,6 +101,19 @@ void exibirContatos() {
             printf("Posicao %d: %s - %s\n", i, hashTable.map[i]->nome, hashTable.map[i]->numero);
         }
     }
+}
+
+void rehashing(){
+    maxsize++;
+    contato** oldmap = hashTable.map;
+    hashTable.map = (contato **) calloc(sizeof(contato), maxsize);
+    hashTable.len = 0;
+    for (int i = 0; i < maxsize-1; i++) {
+        if (oldmap[i] != NULL) {
+            adicionarContato(oldmap[i]->nome, oldmap[i]->numero);
+        }
+    }
+    free(oldmap);
 }
 
 int main() {
