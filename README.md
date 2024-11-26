@@ -1,10 +1,13 @@
-# Tabela Hash - Professor Lucas
-
+> Tabela Hash - Professor Lucas
 # Exercício: Implementação de Lista Telefônica com Hash Table
 
 ## Descrição
 
 Você deverá implementar uma aplicação em C ou C++ que funcione como uma lista telefônica. A aplicação deverá utilizar uma tabela hash para armazenar pares de dados (nome e número de telefone) em memória, possibilitando uma busca rápida pelo número de telefone associado a um nome específico.
+
+## Versões
+
+- Leonardo Felipe Salgado [ver tarefa](/tree/tarefa/Leonardo-Salgado)
 
 ## Objetivo
 
