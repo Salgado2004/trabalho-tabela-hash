@@ -68,8 +68,24 @@ void buscarContato(char *nome) {
     return;
 }
 
-void removerContato() {
-    printf("Funcao para remover contato.\n");
+void removerContato(char *nome) {
+    clock_t start, end;
+    start = clock();
+    
+    int index = hash(nome);
+    if (hashTable.map[index] != NULL) {
+        contato *c = hashTable.map[index];
+        hashTable.map[index] = NULL;
+        hashTable.len--;
+        free(c);
+        end = clock();
+        double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+        printf("Contato removido!\n");
+        printf("(Tempo de remoção: %.4f ms)\n", cpu_time_used);
+    } else {
+        printf("Contato nao encontrado.\n");
+    }
+    return;
 }
 
 void exibirContatos() {
@@ -114,7 +130,9 @@ int main() {
                 buscarContato(nome);
                 break;
             case 3:
-                removerContato();
+                printf("Nome do contato: ");
+                scanf("%s", nome);
+                removerContato(nome);
                 break;
             case 4:
                 exibirContatos();
