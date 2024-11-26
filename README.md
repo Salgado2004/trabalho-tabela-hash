@@ -7,7 +7,7 @@ Você deverá implementar uma aplicação em C ou C++ que funcione como uma list
 
 ## Versões
 
-- Leonardo Felipe Salgado [ver tarefa](/tree/tarefa/Leonardo-Salgado)
+- Leonardo Felipe Salgado [ver tarefa](../tree/tarefa/Leonardo-Salgado)
 
 ## Objetivo
 
