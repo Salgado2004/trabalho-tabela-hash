@@ -5,7 +5,7 @@
 #include <math.h>
 #include <time.h>
 
-int maxsize = 10;
+int maxsize = 15;
 void rehashing();
 
 typedef struct data{
@@ -33,7 +33,7 @@ unsigned int hash(char *nome){
         somatorio += pow(nome[i], (len-i));
     }
     int pos = ((int) sqrt(somatorio)) % maxsize;
-    return pos;
+    return pos >= 0 ? pos : -pos;
 }
 
 void adicionarContato(char *nome, char *numero) {
@@ -66,7 +66,7 @@ void buscarContato(char *nome) {
     if (hashTable.map[index] != NULL) {
         end = clock();
         double cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
-        printf("Contato encontrado: %s - %s ", hashTable.map[index]->nome, hashTable.map[index]->numero);
+        printf("Contato encontrado: (%d) %s - %s ", index, hashTable.map[index]->nome, hashTable.map[index]->numero);
         printf("(Tempo de busca: %.4f ms)\n", cpu_time_used);
     } else {
         printf("Contato nao encontrado.\n");
@@ -98,7 +98,7 @@ void exibirContatos() {
     printf("Contatos: %d/%d\n", hashTable.len, maxsize);
     for (int i = 0; i < maxsize; i++) {
         if (hashTable.map[i] != NULL) {
-            printf("Posicao %d: %s - %s\n", i, hashTable.map[i]->nome, hashTable.map[i]->numero);
+            printf("(%2d) %s - %s\n", i, hashTable.map[i]->nome, hashTable.map[i]->numero);
         }
     }
 }
@@ -122,6 +122,9 @@ int main() {
     char nome[51];
     char numero[11];
 
+    clock_t start, end;
+    double cpu_time_used;
+
     inicializarTabela();
 
     do {
@@ -141,7 +144,11 @@ int main() {
                 scanf("%s", nome);
                 printf("Numero do contato: ");
                 scanf("%s", numero);
+                start = clock();
                 adicionarContato(nome, numero);
+                end = clock();
+                cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC * 1000;
+                printf("(Tempo de insercao: %.4f ms)\n", cpu_time_used);
                 break;
             case 2:
                 printf("Nome do contato: ");
